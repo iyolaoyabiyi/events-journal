@@ -8,8 +8,8 @@ const Event = sequelize.define("event", {
   name: { type: DataTypes.STRING, allowNull: false },
   description: { type: DataTypes.TEXT },
   category: { type: DataTypes.STRING, defaultValue: 'None', allowNull: false },
-  start_time: { type: DataTypes.DATE, defaultValue: Date.now(), allowNull: false },
-  end_time: { type: DataTypes.DATE },
+  startTime: { type: DataTypes.DATE, allowNull: false },
+  endTime: { type: DataTypes.DATE },
 });
 
 export const seedData = async () => {
