@@ -21,7 +21,7 @@ const Footer = () => {
     <footer className="fixed bottom-0 left-0 right-0 bg-white py-4 shadow-lg flex justify-center">
       { 
         location.pathname !== "/log-event" &&
-        <Button type="button" clickFunc={ navigateToForm } btnText="Log new event" />
+        <Button type="button" classType="primary" clickFunc={ navigateToForm } btnText="Log new event" />
       }
   </footer>
   )
