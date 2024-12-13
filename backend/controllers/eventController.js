@@ -1,23 +1,35 @@
 import dayjs from "dayjs";
+
 import Event from "../models/Event.js";
+import { ValidationError } from "sequelize";
 
 export const createEvent = async (req, res) => {
   try {
     let { name, description, category, startTime, endTime } = req.body;
+    
+    // Current time as default value for empty startTime
     if (!startTime) {
-      startTime = dayjs().format("YYYY-MM-DDTHH:mm:ss")
+      startTime = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+    } 
+    // Category default value
+    if (category.trim() === "") {
+      category = "None"
     }
     const event = await Event.create({ name, description, category, startTime, endTime });
     // To do: handle error
     res.status(201).json({event, status: "created"});
   } catch (err) {
-    res.status(400).json({ error: err.message })
+    if (err instanceof ValidationError) {
+      return res.status(400).json({ error: err.errors.map((e) => e.message) });
+    }
+    res.status(500).json({ error: "Server related error!" })
   }
 }
 
 export const readEvents = async (req, res) => {
   try {
     const eventId = req.params.id;
+    // Get all events if id param is not specified
     if (!eventId) {
       const events = await Event.findAll({
         order: [["startTime", "DESC"]]
@@ -40,6 +52,7 @@ export const updateEvent = async (req, res) => {
     const eventId = req.params.id;
     const { name, description, category, startTime, endTime } = req.body;
     let event = await Event.findByPk(eventId);
+    // Check if events is valic
     if (!event) {
       throw new Error("Event not found!");
     }

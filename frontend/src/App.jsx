@@ -25,12 +25,9 @@ function App() {
   }, []);
   // Updates the categories list
   useEffect(() => {
-    events.forEach(event => {
-      if (!categories.includes(event.category)) {
-        setCategories([...categories, event.category])
-      }
-    });
-  }, [categories, events]);
+    const uniqueCategories = new Set(events.map(event => event.category));
+    setCategories([...uniqueCategories]);
+  }, [events]);
 
   return (
     <EventContext.Provider value={{events, setEvents, isLoading, setLoading}}>
@@ -50,4 +47,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

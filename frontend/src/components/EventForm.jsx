@@ -104,7 +104,7 @@ const EventForm = ({ handleChange, handleSubmit }) => {
 
     {/* Buttons */}
     <div className="flex justify-center gap-5">
-        <Button type="reset" clickFunc={ closeForm } btnText="Cancel" />
+        <Button type="button" clickFunc={ closeForm } btnText="Cancel" />
         <Button type="submit" btnText={`${isUpdate ? "Edit" : "Add"} Event`} />
       </div>
     </form>

@@ -6,7 +6,7 @@ export const defaultFormData = {
   name: '',
   category: '',
   description: '',
-  startTime: '',
+  startTime: 'None',
   endTime: ''
 }
 

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 const EventCard = ({ event, onEdit, onDelete }) => {
   return (
-    <div key={event.id} className="bg-white shadow-md rounded-lg p-4 mb-4">
+    <div className="bg-white shadow-md rounded-lg p-4 mb-4">
       {/* Header */}
       <p className="text-sm text-gray-500 mb-2">
         {new Date(event.startTime).toLocaleString()}

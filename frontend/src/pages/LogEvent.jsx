@@ -1,12 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../services/api";
 import EventForm from "../components/EventForm";
+import EventContext from "../store/EventContext";
 import FormContext from "../store/FormContext";
 
+import { updateEvents } from "../utils/helpers";
 
 const LogEvent = () => {
+  const { setEvents, setLoading } = useContext(EventContext);
   const {formData, setFormData, isUpdate, setUpdateStat} = useContext(FormContext);
 
   const navigate = useNavigate();
@@ -22,22 +25,20 @@ const LogEvent = () => {
       // Update or Upload the event
       if (isUpdate === true) {
         await api.put(`/events/${formData.id}`, formData);
-        navigate('/');
-        alert("Event updated successfully!");
+        alert("Event updated successfully!")
       } else {
         await api.post('/events', formData);
-        navigate('/');
         alert('Event added successfully!');
       }
       setUpdateStat(false);
-    } catch (error) {
-      console.error('Error adding event:', error);
+      await updateEvents(setEvents, setLoading);
+      navigate('/');
+    } catch (err) {
+      console.log(err.response.data.error.join("\n"))
+      alert(`An error occured \n \n ${err.response.data.error.join("\n")}`);
     }
   }
 
-  useEffect(() => {
-    
-  }, [])
   return (
     <div className="page">
       <h2 className="page-heading">Log Event</h2>
