@@ -2,15 +2,16 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../services/api";
+import BannerContext from "../store/BannerContext";
 import EventForm from "../components/EventForm";
 import EventContext from "../store/EventContext";
 import FormContext from "../store/FormContext";
-
-import { updateEvents } from "../utils/helpers";
+import { showBanner, updateEvents } from "../utils/helpers";
 
 const LogEvent = () => {
-  const { setEvents, setLoading } = useContext(EventContext);
   const {formData, setFormData, isUpdate, setUpdateStat} = useContext(FormContext);
+  const { setEvents, setLoading } = useContext(EventContext);
+  const { setMessage, setType, setIsVisible } = useContext(BannerContext)
 
   const navigate = useNavigate();
   // Handles form inputs
@@ -22,20 +23,24 @@ const LogEvent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let message;
+      let type = "success";
       // Update or Upload the event
       if (isUpdate === true) {
         await api.put(`/events/${formData.id}`, formData);
-        alert("Event updated successfully!")
+        message = "Event updated!";
       } else {
+        message = "New event added!";
         await api.post('/events', formData);
-        alert('Event added successfully!');
       }
       setUpdateStat(false);
+      showBanner({setMessage, message, setType, type, setIsVisible });
       await updateEvents(setEvents, setLoading);
       navigate('/');
     } catch (err) {
-      console.log(err.response.data.error.join("\n"))
-      alert(`An error occured \n \n ${err.response.data.error.join("\n")}`);
+      const message = err.response.data.error.join(". ");
+      const type = "error";
+      showBanner({setMessage, message, setType, type, setIsVisible });
     }
   }
 

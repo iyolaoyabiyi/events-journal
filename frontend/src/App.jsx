@@ -11,6 +11,7 @@ import Events from "./pages/Events";
 import Journal from "./pages/Journal";
 import Layout from "./components/Layout";
 import LogEvent from "./pages/LogEvent";
+import BannerProvider from "./store/BannerProvider";
 
 function App() {
   // Initialize global states
@@ -30,20 +31,22 @@ function App() {
   }, [events]);
 
   return (
-    <EventContext.Provider value={{events, setEvents, isLoading, setLoading}}>
-      <FormContext.Provider value={{formData, setFormData, isUpdate, setUpdateStat}}>
-        <Router>
-          <Routes>
-            <Route path="/" element={ <Layout /> }>
-              <Route index element={ <Journal events={ events } isLoading={ isLoading } /> } />
-              <Route path="categories" element={ <Categories categories={ categories } isLoading={ isLoading } /> } />
-              <Route path="events" element={ <Events events={ events } isLoading={ isLoading } /> } />
-              <Route path="log-event" element={ <LogEvent /> } />
-            </Route>
-          </Routes>
-        </Router>
-      </FormContext.Provider>
-    </EventContext.Provider>
+    <BannerProvider>
+      <EventContext.Provider value={{events, setEvents, isLoading, setLoading}}>
+        <FormContext.Provider value={{formData, setFormData, isUpdate, setUpdateStat}}>
+          <Router>
+            <Routes>
+              <Route path="/" element={ <Layout /> }>
+                <Route index element={ <Journal events={ events } isLoading={ isLoading } /> } />
+                <Route path="categories" element={ <Categories categories={ categories } isLoading={ isLoading } /> } />
+                <Route path="events" element={ <Events events={ events } isLoading={ isLoading } /> } />
+                <Route path="log-event" element={ <LogEvent /> } />
+              </Route>
+            </Routes>
+          </Router>
+        </FormContext.Provider>
+      </EventContext.Provider>
+    </BannerProvider>
   );
 }
 

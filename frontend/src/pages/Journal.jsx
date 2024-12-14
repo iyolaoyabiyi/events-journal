@@ -7,10 +7,13 @@ import EventContext from "../store/EventContext";
 import FormContext from "../store/FormContext";
 import EventCard from "../components/EventCard";
 import Loading from "../components/Loading";
+import BannerContext from "../store/BannerContext";
+import { showBanner } from "../utils/helpers";
 
 const Journal = ({ isLoading }) => {
   const { events, setEvents } = useContext(EventContext);
   const { setFormData, setUpdateStat } = useContext(FormContext);
+  const { setIsVisible, setMessage, setType} = useContext(BannerContext);
   const navigate = useNavigate();
 
   const handleEdit = (event) => {
@@ -19,10 +22,15 @@ const Journal = ({ isLoading }) => {
     navigate("/log-event");
   };
   const handleDelete = async (id) => {
-    await api.delete(`/events/${id}`)
+    // Delete Event
+    await api.delete(`/events/${id}`);
+    // Update events
     const res = await api.get("/events");
     setEvents(res.data.events);
-    alert(`Deleted event with ID: ${id}`);
+    // Display banner
+    const message = "Event Deleted";
+    const type = "success";
+    showBanner({setMessage, message, setType, type, setIsVisible});
   };
 
   return (
