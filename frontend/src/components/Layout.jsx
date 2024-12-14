@@ -4,7 +4,6 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 const Layout = () => {
-
   return (
     <main className="min-h-screen flex flex-col justify-between p-5 max-w-screen-md mx-auto border bg-gray-50">
       <Header />
