@@ -2,8 +2,11 @@ import PropTypes from "prop-types";
 
 import List from "../components/List";
 import Loading from "../components/Loading";
+import { useContext } from "react";
+import EventContext from "../store/EventContext";
 
-const Events = ({ isLoading, events }) => {
+const Events = () => {
+  const { isLoading, events } = useContext(EventContext);
 
   return (
     <section className="page">

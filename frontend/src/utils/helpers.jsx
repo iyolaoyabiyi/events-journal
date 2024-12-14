@@ -18,6 +18,7 @@ export const titles = {
   "/categories": `Categories :: ${CONFIG.appName}`,
   "/log-event": `Event Form :: ${CONFIG.appName}`,
 }
+
 // Set button styles based on type
 export const getButtonClasses = (type) => {
   const baseClasses = "text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 uppercase";
@@ -38,19 +39,20 @@ export const bannerStyles = {
   error: "bg-red-100 text-red-700"
 }
 
-// Updates event from backend
-export const updateEvents = async (setEvents, setLoading) => {
+// Gets latest events from server
+export const getEvents = async () => {
   try {
-    setLoading(true);
     const res = await api.get("/events");
     const events = res.data.events;
-    setEvents(events);
-    // setTimeout(() => {
-      setLoading(false);
-    // }, 2000);
+    return events;
   } catch (err) {
-    console.log(err)
+    console.error(err);
   }
+}
+
+// Get categories from event
+export const getCategories = events => {
+  return [...new Set(events.map(event => event.category))];
 }
 
 // Shows banner

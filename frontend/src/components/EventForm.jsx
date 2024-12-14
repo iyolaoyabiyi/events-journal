@@ -5,16 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 import Button from "./Button";
 import FormContext from "../store/FormContext";
-import { defaultFormData } from "../utils/helpers";
 
 const EventForm = ({ handleChange, handleSubmit }) => {
-  const {formData, setFormData, isUpdate} = useContext(FormContext);
+  const {formData, isUpdate} = useContext(FormContext);
   const navigate = useNavigate();
-
-  const closeForm = () => {
-    setFormData(defaultFormData);
-    navigate("/");
-  }
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 shadow-lg rounded-lg space-y-4 max-w-md
@@ -104,7 +98,7 @@ const EventForm = ({ handleChange, handleSubmit }) => {
 
     {/* Buttons */}
     <div className="flex justify-center gap-5">
-        <Button type="button" classType="danger" clickFunc={ closeForm } btnText="Cancel" />
+        <Button type="button" classType="danger" clickFunc={ () => navigate("/") } btnText="Cancel" />
         <Button type="submit" classType="primary" btnText={`${isUpdate ? "Edit" : "Add"} Event`} />
       </div>
     </form>

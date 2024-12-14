@@ -1,36 +1,36 @@
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 
 import api from "../../services/api";
+import BannerContext from "../store/BannerContext";
 import EventContext from "../store/EventContext";
-import FormContext from "../store/FormContext";
 import EventCard from "../components/EventCard";
 import Loading from "../components/Loading";
-import BannerContext from "../store/BannerContext";
 import { showBanner } from "../utils/helpers";
+import useFormNavigation from "../hooks/useFormNavigation";
 
-const Journal = ({ isLoading }) => {
-  const { events, setEvents } = useContext(EventContext);
-  const { setFormData, setUpdateStat } = useContext(FormContext);
+const Journal = () => {
+  const { events, isLoading, setEvents } = useContext(EventContext);
   const { setIsVisible, setMessage, setType} = useContext(BannerContext);
-  const navigate = useNavigate();
 
+  const setFormAndNavigate = useFormNavigation()
   const handleEdit = (event) => {
-    setFormData(event);
-    setUpdateStat(true);
-    navigate("/log-event");
+    setFormAndNavigate({formData: event, status: true});
   };
   const handleDelete = async (id) => {
+    // Confirm Deletion
+    const isSure = confirm("Are you sure you want to delete event?");
     // Delete Event
-    await api.delete(`/events/${id}`);
-    // Update events
-    const res = await api.get("/events");
-    setEvents(res.data.events);
-    // Display banner
-    const message = "Event Deleted";
-    const type = "success";
-    showBanner({setMessage, message, setType, type, setIsVisible});
+    if (isSure) {
+      await api.delete(`/events/${id}`);
+      // Update events
+      const res = await api.get("/events");
+      setEvents(res.data.events);
+      // Display banner
+      const message = "Event Deleted";
+      const type = "success";
+      showBanner({setMessage, message, setType, type, setIsVisible});
+    }
   };
 
   return (

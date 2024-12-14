@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 
-import CONFIG from "../../CONFIG";
-
 import Banner from "./Banner";
 import BannerContext from "../store/BannerContext";
+import CONFIG from "../../CONFIG";
 
 const Header = () => {
   const { isVisible, message, type, duration} = useContext(BannerContext);
@@ -22,10 +21,10 @@ const Header = () => {
           <Link to="/categories" className="hover:text-green-900 transition">Categories</Link>
         </nav>
       </div>
-      { 
+      {
         isVisible && 
         <Banner message={ message } type={ type } duration={ duration }/>
-      } 
+      }
     </header>
   )
 }

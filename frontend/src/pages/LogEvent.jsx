@@ -4,16 +4,16 @@ import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import BannerContext from "../store/BannerContext";
 import EventForm from "../components/EventForm";
-import EventContext from "../store/EventContext";
 import FormContext from "../store/FormContext";
-import { showBanner, updateEvents } from "../utils/helpers";
+import { showBanner } from "../utils/helpers";
+import useEvent from "../hooks/useEvent";
 
 const LogEvent = () => {
   const {formData, setFormData, isUpdate, setUpdateStat} = useContext(FormContext);
-  const { setEvents, setLoading } = useContext(EventContext);
   const { setMessage, setType, setIsVisible } = useContext(BannerContext)
 
   const navigate = useNavigate();
+  const updateEvents = useEvent();
   // Handles form inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,9 +34,11 @@ const LogEvent = () => {
         await api.post('/events', formData);
       }
       setUpdateStat(false);
-      showBanner({setMessage, message, setType, type, setIsVisible });
-      await updateEvents(setEvents, setLoading);
+      // Update events
+      updateEvents();
+      // Navigate to homepage
       navigate('/');
+      showBanner({setMessage, message, setType, type, setIsVisible });
     } catch (err) {
       const message = err.response.data.error.join(". ");
       const type = "error";

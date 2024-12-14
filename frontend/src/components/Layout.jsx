@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
 import Header from "./Header";
+// Hooks
 import useTitle from "../hooks/useTitle";
 import useEvent from "../hooks/useEvent";
 

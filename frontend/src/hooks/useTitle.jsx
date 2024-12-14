@@ -8,6 +8,7 @@ const appName = CONFIG?.appName || "Events Journal";
 
 const useTitle = () => {
   const location = useLocation();
+  
   useEffect(() => {
     document.title = titles[location.pathname] || appName;
   }, [location.pathname]);

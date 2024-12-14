@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import BannerContext from "./BannerContext";
 
-
 const BannerProvider = ({ children }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [message, setMessage] = useState("");

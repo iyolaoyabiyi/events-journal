@@ -1,27 +1,17 @@
-import { useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation} from "react-router-dom";
 
 import Button from "./Button";
-import FormContext from "../store/FormContext";
-import { defaultFormData } from "../utils/helpers";
+import useFormNavigation from "../hooks/useFormNavigation";
 
 const Footer = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const { setFormData, setUpdateStat } = useContext(FormContext);
-  
-  const navigateToForm = () => {
-    setUpdateStat(false);
-    setFormData({...defaultFormData});
-    navigate("/log-event");
-  }
+  const setFormAndNavigate = useFormNavigation();
   
   return (
     <footer className="fixed bottom-0 left-0 right-0 bg-white py-4 shadow-lg flex justify-center">
       { 
         location.pathname !== "/log-event" &&
-        <Button type="button" classType="primary" clickFunc={ navigateToForm } btnText="Log new event" />
+        <Button type="button" classType="primary" clickFunc={ setFormAndNavigate } btnText="Log new event" />
       }
   </footer>
   )
