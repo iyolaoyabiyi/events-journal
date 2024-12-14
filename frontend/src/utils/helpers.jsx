@@ -1,3 +1,4 @@
+import CONFIG from '../../CONFIG';
 import api from '../../services/api';
 
 // Default data for event form
@@ -8,6 +9,14 @@ export const defaultFormData = {
   description: '',
   startTime: '',
   endTime: ''
+}
+
+// Page Titles
+export const titles = {
+  "/": `Journals :: ${CONFIG.appName}`,
+  "/events": `Events :: ${CONFIG.appName}`,
+  "/categories": `Categories :: ${CONFIG.appName}`,
+  "/log-event": `Event Form :: ${CONFIG.appName}`,
 }
 // Set button styles based on type
 export const getButtonClasses = (type) => {

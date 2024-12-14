@@ -2,8 +2,11 @@ import { Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
 import Header from "./Header";
+import useTitle from "../hooks/useTitle";
 
 const Layout = () => {
+  // Update page title
+  useTitle()
   return (
     <main className="min-h-screen flex flex-col justify-between p-5 max-w-screen-md mx-auto border bg-gray-50">
       <Header />

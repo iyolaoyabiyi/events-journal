@@ -18,7 +18,7 @@ const Banner = ({ type, message, duration = 5000 }) => {
   if (!isVisible) return null;
 
   return (
-    <div className={`p-4 my-4 rounded-lg shadow-md ${bannerStyles[type]} transition-opacity center`}>
+    <div className={`p-4 my-4 rounded-lg shadow-md text-center ${bannerStyles[type]} transition-opacity`}>
       { message }
     </div>
   )
