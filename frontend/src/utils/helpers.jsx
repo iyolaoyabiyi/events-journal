@@ -4,9 +4,9 @@ import api from '../../services/api';
 export const defaultFormData = {
   id: '',
   name: '',
-  category: '',
+  category: 'None',
   description: '',
-  startTime: 'None',
+  startTime: '',
   endTime: ''
 }
 // Set button styles based on type
