@@ -9,6 +9,7 @@ import useEvent from "../hooks/useEvent";
 const Layout = () => {
   // Update page title
   useTitle();
+  // Update events
   useEvent();
   return (
     <main className="min-h-screen flex flex-col justify-between p-5 max-w-screen-md mx-auto border bg-gray-50">

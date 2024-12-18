@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect } from "react";
 import EventContext from "../store/EventContext";
 import { getEvents } from "../utils/helpers";
 
-const useEvent = (...deps) => {
+const useEvent = () => {
   const { setEvents, setLoading } = useContext(EventContext);
 
   const updateEvents = useCallback(
@@ -19,7 +19,7 @@ const useEvent = (...deps) => {
   useEffect(() => {
     updateEvents();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setEvents, setLoading, ...deps]);
+  }, [setEvents, setLoading]);
 
   return updateEvents;
 }

@@ -13,7 +13,7 @@ export const defaultFormData = {
 
 // Page Titles
 export const titles = {
-  "/": `Journals :: ${CONFIG.appName}`,
+  "/": `Journal :: ${CONFIG.appName}`,
   "/events": `Events :: ${CONFIG.appName}`,
   "/categories": `Categories :: ${CONFIG.appName}`,
   "/log-event": `Event Form :: ${CONFIG.appName}`,
@@ -48,6 +48,49 @@ export const getEvents = async () => {
   } catch (err) {
     console.error(err);
   }
+}
+
+// Group events
+export const groupEvents = events =>  {
+  return events.reduce((acc, event) => {
+    const year = new Date(event.startTime).getFullYear();
+    const month = new Date(event.startTime).toLocaleString('default', { month: 'long' });
+    const day = new Date(event.startTime).toLocaleDateString('default', { weekday: 'long', day: 'numeric' });
+    
+    acc[year] = acc[year] || {};
+    acc[year][month] = acc[year][month] || {};
+    acc[year][month][day] = acc[year][month][day] || [];
+    acc[year][month][day].push(event);
+
+    return acc;
+  }, {});
+}
+
+// Find the most recent year, month, and day with events
+export const getMostRecentDate = (groupedEvents) => {
+  const years = Object.keys(groupedEvents).map(Number).sort((a, b) => b - a); // Sort years descending
+  for (const year of years) {
+    const months = Object.keys(groupedEvents[year])
+      .sort((a, b) => new Date(`01 ${b} ${year}`) - new Date(`01 ${a} ${year}`)); // Sort months descending
+    for (const month of months) {
+      const days = Object.keys(groupedEvents[year][month])
+        .sort(
+          (a, b) =>
+            new Date(`${year}-${month}-${b.split(", ")[1]}`) -
+            new Date(`${year}-${month}-${a.split(", ")[1]}`)
+        ); // Sort days descending
+      if (days.length > 0) {
+        return { year, month, day: days[0] }; // Return the most recent year, month, and day
+      }
+    }
+  }
+  return null; // If no events exist
+};
+
+// Get unique events
+export const getEventNames = events => {
+  const updatedEvents = events.filter((event, index, events) => index === events.findIndex(item => event.name === item.name) );
+  return updatedEvents;
 }
 
 // Get categories from event

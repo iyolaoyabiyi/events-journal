@@ -61,7 +61,7 @@ Follow these steps to clone and run the project locally:
    - Use the "Edit" button to update an event.
    - Click "Delete" to remove an event permanently.
 
-4. **Categories and Filters:**
+4. **Categories:**
    - Navigate to the "Categories" tab to view event categories.
 
 ---
