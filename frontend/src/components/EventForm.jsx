@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "./Button";
-import FormContext from "../store/FormContext";
+import { FormContext } from "../store/Contexts";
 
 const EventForm = ({ handleChange, handleSubmit }) => {
   const {formData, isUpdate} = useContext(FormContext);

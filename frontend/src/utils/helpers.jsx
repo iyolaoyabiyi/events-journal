@@ -51,39 +51,70 @@ export const getEvents = async () => {
 }
 
 // Group events
-export const groupEvents = events =>  {
-  return events.reduce((acc, event) => {
-    const year = new Date(event.startTime).getFullYear();
-    const month = new Date(event.startTime).toLocaleString('default', { month: 'long' });
-    const day = new Date(event.startTime).toLocaleDateString('default', { weekday: 'long', day: 'numeric' });
-    
-    acc[year] = acc[year] || {};
-    acc[year][month] = acc[year][month] || {};
-    acc[year][month][day] = acc[year][month][day] || [];
-    acc[year][month][day].push(event);
+export const groupEvents = (events) => {
+  if (!events || events.length === 0) return new Map();
 
-    return acc;
-  }, {});
-}
+  const groupedEvents = new Map();
+
+  events.forEach((event) => {
+    const startTime = new Date(event.startTime);
+    const year = startTime.getFullYear();
+    const month = startTime.toLocaleString("default", { month: "long" });
+    const day = startTime.toLocaleDateString("default", { weekday: "long", day: "numeric" });
+    // Initialize year group
+    if (!groupedEvents.has(year)) {
+      groupedEvents.set(year, new Map());
+    }
+    const yearGroup = groupedEvents.get(year);
+    // Initialize month group
+    if (!yearGroup.has(month)) {
+      yearGroup.set(month, new Map());
+    }
+    const monthGroup = yearGroup.get(month);
+    // Initialize day group
+    if (!monthGroup.has(day)) {
+      monthGroup.set(day, []);
+    }
+    // Add event to day group
+    monthGroup.get(day).push(event);
+  });
+
+  return groupedEvents;
+};
 
 // Find the most recent year, month, and day with events
 export const getMostRecentDate = (groupedEvents) => {
-  const years = Object.keys(groupedEvents).map(Number).sort((a, b) => b - a); // Sort years descending
-  for (const year of years) {
-    const months = Object.keys(groupedEvents[year])
-      .sort((a, b) => new Date(`01 ${b} ${year}`) - new Date(`01 ${a} ${year}`)); // Sort months descending
-    for (const month of months) {
-      const days = Object.keys(groupedEvents[year][month])
-        .sort(
-          (a, b) =>
-            new Date(`${year}-${month}-${b.split(", ")[1]}`) -
-            new Date(`${year}-${month}-${a.split(", ")[1]}`)
-        ); // Sort days descending
-      if (days.length > 0) {
-        return { year, month, day: days[0] }; // Return the most recent year, month, and day
+  if (!groupedEvents || groupedEvents.size === 0) return null;
+
+  // Convert Map keys (years) to an array and sort in descending order
+  const sortedYears = Array.from(groupedEvents.keys()).sort((a, b) => b - a);
+
+  for (const year of sortedYears) {
+    const months = groupedEvents.get(year);
+    if (months && months.size > 0) {
+      // Convert month keys to an array and sort in descending order
+      const sortedMonths = Array.from(months.keys()).sort((a, b) => 
+        new Date(`01 ${b} ${year}`) - new Date(`01 ${a} ${year}`)
+      );
+
+      for (const month of sortedMonths) {
+        const days = months.get(month);
+        if (days && days.size > 0) {
+          // Convert day keys to an array and sort in descending order
+          const sortedDays = Array.from(days.keys()).sort(
+            (a, b) =>
+              new Date(`${year}-${month}-${b.split(", ")[1]}`) -
+              new Date(`${year}-${month}-${a.split(", ")[1]}`)
+          );
+
+          if (sortedDays.length > 0) {
+            return { year, month, day: sortedDays[0] };
+          }
+        }
       }
     }
   }
+
   return null; // If no events exist
 };
 

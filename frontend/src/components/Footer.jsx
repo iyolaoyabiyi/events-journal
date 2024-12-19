@@ -1,7 +1,7 @@
 import { useLocation} from "react-router-dom";
 
 import Button from "./Button";
-import useFormNavigation from "../hooks/useFormNavigation";
+import { useFormNavigation } from "../hooks/Hooks";
 
 const Footer = () => {
   const location = useLocation();

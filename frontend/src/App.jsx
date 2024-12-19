@@ -1,31 +1,25 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// Local imports
-import Categories from "./pages/Categories";
-import Events from "./pages/Events";
-import Journal from "./pages/Journal";
+import { Suspense } from "react";
 import Layout from "./components/Layout";
-import LogEvent from "./pages/LogEvent";
+import Loading from "./components/Loading";
 // Context Providers
-import BannerProvider from "./store/BannerProvider";
-import EventProvider from "./store/EventProvider";
-import FormProvider from "./store/FormProvider";
+import AppProviders from "./store/Providers";
+// routes
+import routes from "./routes/routes";
 
 const App = () => (
-  <EventProvider>
-  <BannerProvider>
-  <FormProvider>
+  <AppProviders>
     <Router>
-      <Routes>
-        <Route path="/" element={ <Layout /> }>
-          <Route index element={ <Journal /> } />
-          <Route path="categories" element={ <Categories /> } />
-          <Route path="events" element={ <Events /> } />
-          <Route path="log-event" element={ <LogEvent /> } />
-        </Route>
-      </Routes>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<Layout />} >
+            {routes.map(({ path, element, exact }, index) => (
+              <Route key={index} path={path} element={element} exact={exact} />
+            ))}
+          </Route>
+        </Routes>
+      </Suspense>
     </Router>
-  </FormProvider>
-  </BannerProvider>
-  </EventProvider>
+  </AppProviders>
 );
 export default App;

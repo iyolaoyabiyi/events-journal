@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useContext, useEffect } from "react";
 
-import BannerContext from "../store/BannerContext";
+import { BannerContext } from "../store/Contexts";
 import { bannerStyles } from "../utils/helpers";
 
 const Banner = ({ type, message, duration = 5000 }) => {

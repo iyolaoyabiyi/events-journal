@@ -5,6 +5,7 @@ function EventCard({ event, onEdit, onDelete }) {
     <div className="bg-gray-50 shadow-sm rounded-md p-4 mb-4 transition-shadow hover:shadow-md">
       <div className="flex justify-between items-start mb-3">
         <div>
+          <h3 className="bg-green-50 text-green-700 rounded-md shadow-sm hover:bg-green-100 mb-2">{event.category}</h3>
           <p className="text-sm text-gray-700 font-medium">
             {new Date(event.startTime).toLocaleTimeString()} - {event.name}
           </p>

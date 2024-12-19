@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 
 import Banner from "./Banner";
-import BannerContext from "../store/BannerContext";
+import { BannerContext } from "../store/Contexts";
 import CONFIG from "../../CONFIG";
 
 const Header = () => {

@@ -2,12 +2,11 @@ import { ChevronDownIcon, ChevronRightIcon, CalendarIcon } from '@heroicons/reac
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import api from "../../services/api";
-import BannerContext from "../store/BannerContext";
-import EventContext from "../store/EventContext";
+import { BannerContext, EventContext } from "../store/Contexts";
 import EventCard from "../components/EventCard";
 import Loading from "../components/Loading";
 import { getMostRecentDate, groupEvents, showBanner } from "../utils/helpers";
-import useFormNavigation from "../hooks/useFormNavigation";
+import { useFormNavigation } from "../hooks/Hooks";
 
 const Journal = () => {
   const { events, isLoading, setEvents } = useContext(EventContext);
@@ -19,9 +18,11 @@ const Journal = () => {
   const groupedEvents = useMemo(() => {
     return events ? groupEvents(events) : {};
   }, [events]);
+
+  console.log(groupedEvents);
   // Updates expanded sections when groupedEvents changes
   useEffect(() => {
-    if (Object.keys(groupedEvents).length > 0) {
+    if (groupedEvents.size > 0) {
       const mostRecentDate = getMostRecentDate(groupedEvents);
       if (mostRecentDate) {
         setExpandedSections({
@@ -68,9 +69,7 @@ const Journal = () => {
         <Loading />
       ) : (
         <div className="space-y-6">
-          {Object.entries(groupedEvents)
-            .sort(([yearA], [yearB]) => yearB - yearA)
-            .map(([year, months]) => (
+          {[...groupedEvents.entries()].map(([year, months]) => (
               <div key={year} className="border border-green-300 bg-white shadow-lg rounded-lg p-4">
                 <h3
                   className="cursor-pointer font-bold text-xl text-green-800 flex items-center
@@ -87,7 +86,7 @@ const Journal = () => {
                   </span>
                 </h3>
                 {expandedSections[year] &&
-                  Object.entries(months).map(([month, days]) => (
+                  [...months.entries()].map(([month, days]) => (
                     <div key={month} className="pl-4 mt-2">
                       <h4
                         className="cursor-pointer font-medium text-lg text-green-700 flex items-center 
@@ -106,7 +105,7 @@ const Journal = () => {
                         </span>
                       </h4>
                       {expandedSections[`${year}-${month}`] &&
-                        Object.entries(days).map(([day, dayEvents]) => (
+                        [...days.entries()].map(([day, dayEvents]) => (
                           <div key={day} className="pl-8 mt-2">
                             <h5
                               className="cursor-pointer font-light text-md text-green-600 flex items-center
