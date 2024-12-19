@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import Event from "../models/Event.js";
 import { EventError, getErrorMessage, getErrors } from "../utils/helpers.js";
-import { ValidationError } from "sequelize";
+import { Op } from "sequelize";
 // Add Events
 export const createEvent = async (req, res) => {
   try {
@@ -27,20 +27,52 @@ export const createEvent = async (req, res) => {
 export const readEvents = async (req, res) => {
   try {
     const eventId = req.params.id;
-    // Read all events if no eventid in path
-    let status = "read";
-    const events = eventId ? 
-      await Event.findByPk(eventId) :
-      await Event.findAll({
-        order: [["startTime", "DESC"]]
-      });
-    if (!events || events.length < 1) {
-      status = "empty";
+    const { page = 1, limit = 100, category, startTime } = req.query;
+    if (eventId) {
+      // Fetch a single event by ID
+      const event = await Event.findByPk(eventId);
+      if (!event) {
+        throw new EventError(getErrorMessage({ type: "event" }));
+      }
+      return res.status(200).json({ events: event, status: "read" });
     }
-    res.status(200).json({events, status: status});
+
+    // Pagination calculation
+    const offset = (page - 1) * limit;
+
+    // Filtering conditions
+    const where = {};
+    if (category) {
+      where.category = category;
+    }
+    if (startTime) {
+      where.startTime = { [Op.gte]: new Date(startTime) }; // Using Sequelize Op for comparison
+    }
+
+    // Fetch filtered and paginated events
+    const events = await Event.findAll({
+      where,
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [["startTime", "DESC"]],
+    });
+
+    const total = await Event.count({ where }); // Total events matching filters
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      events,
+      status: events.length ? "read" : "empty",
+      pagination: {
+        total,
+        totalPages,
+        currentPage: parseInt(page),
+        limit: parseInt(limit),
+      },
+    });
   } catch (err) {
-    const errors = getErrors(err)
-    return res.status(errors.status).json({ error: errors.data });
+    const errors = getErrors(err);
+    res.status(errors.status).json({ error: errors.data });
   }
 }
 
