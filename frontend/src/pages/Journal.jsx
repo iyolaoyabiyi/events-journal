@@ -1,46 +1,24 @@
 import { ChevronDownIcon, ChevronRightIcon, CalendarIcon } from '@heroicons/react/24/solid';
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
 
-import api from "../../services/api";
 import { BannerContext, EventContext } from "../store/Contexts";
 import EventCard from "../components/EventCard";
 import Loading from "../components/Loading";
-import { getMostRecentDate, groupEvents, showBanner } from "../utils/helpers";
-import { useFormNavigation } from "../hooks/Hooks";
+import { groupEvents, showBanner } from "../utils/helpers";
+import { useFormNavigation, useToggleSections, useEventOperations } from "../hooks/Hooks";
 
 const Journal = () => {
-  const { events, isLoading, setEvents } = useContext(EventContext);
+  const { events, isLoading } = useContext(EventContext);
   const { setIsVisible, setMessage, setType} = useContext(BannerContext);
-  const [expandedSections, setExpandedSections] = useState({});
   const setFormAndNavigate = useFormNavigation();
+  const { removeEvent } = useEventOperations();
   
   // Group events when the events changes
   const groupedEvents = useMemo(() => {
     return events ? groupEvents(events) : {};
   }, [events]);
+  const { expandedSections, toggleSection } = useToggleSections(groupedEvents);
 
-  console.log(groupedEvents);
-  // Updates expanded sections when groupedEvents changes
-  useEffect(() => {
-    if (groupedEvents.size > 0) {
-      const mostRecentDate = getMostRecentDate(groupedEvents);
-      if (mostRecentDate) {
-        setExpandedSections({
-          [mostRecentDate.year]: true,
-          [`${mostRecentDate.year}-${mostRecentDate.month}`]: true,
-          [`${mostRecentDate.year}-${mostRecentDate.month}-${mostRecentDate.day}`]: true,
-        });
-      }
-    }
-  }, [groupedEvents]);
-
-  // Handle section toggles
-  const toggleSection = (key) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
   // Handle edit button
   const handleEdit = (event) => {
     setFormAndNavigate({formData: event, status: true});
@@ -51,10 +29,7 @@ const Journal = () => {
     const isSure = confirm("Are you sure you want to delete event?");
     // Delete Event
     if (isSure) {
-      await api.delete(`/events/${id}`);
-      // Update events
-      const res = await api.get("/events");
-      setEvents(res.data.events);
+      await removeEvent(id);
       // Display banner
       const message = "Event Deleted";
       const type = "success";

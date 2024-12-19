@@ -1,5 +1,4 @@
 import CONFIG from '../../CONFIG';
-import api from '../../services/api';
 
 // Default data for event form
 export const defaultFormData = {
@@ -37,17 +36,6 @@ export const bannerStyles = {
   success: "bg-green-100 text-green-700",
   warning: "bg-yellow-100 text-yellow-700",
   error: "bg-red-100 text-red-700"
-}
-
-// Gets latest events from server
-export const getEvents = async () => {
-  try {
-    const res = await api.get("/events");
-    const events = res.data.events;
-    return events;
-  } catch (err) {
-    console.error(err);
-  }
 }
 
 // Group events

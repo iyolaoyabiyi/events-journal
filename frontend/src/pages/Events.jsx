@@ -8,14 +8,15 @@ import { getEventNames } from "../utils/helpers";
 
 const Events = () => {
   const { isLoading, events } = useContext(EventContext);
-
+  const eventNames = getEventNames(events);
+  
   return (
     <section className="page">
       <h2 className="page-heading">Events</h2>
       { isLoading ? 
         <Loading /> : 
         <List 
-          items={getEventNames(events)}  
+          items={eventNames}  
           renderItem={(event) => (
             <div>
               <p className="text-lg font-semibold">{event.name}</p>
