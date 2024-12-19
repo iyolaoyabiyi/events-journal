@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useNavigate,  useLocation } from "react-router-dom";
 
 import { EventContext, FormContext  } from "../store/Contexts";
@@ -89,7 +89,7 @@ export const useTitle = () => {
 
 // Handles Journal section toggling
 export const useToggleSections = (groupedEvents) => {
-  const [expandedSections, setExpandedSections] = useState({});
+  const { expandedSections, setExpandedSections } = useContext(EventContext);
 
   const toggleSection = (key) => {
     setExpandedSections((prev) => ({
@@ -101,14 +101,15 @@ export const useToggleSections = (groupedEvents) => {
       if (groupedEvents.size > 0) {
         const mostRecentDate = getMostRecentDate(groupedEvents);
         if (mostRecentDate) {
-          setExpandedSections({
+          setExpandedSections(prev => ({ 
+            ...prev,
             [mostRecentDate.year]: true,
             [`${mostRecentDate.year}-${mostRecentDate.month}`]: true,
             [`${mostRecentDate.year}-${mostRecentDate.month}-${mostRecentDate.day}`]: true,
-          });
+          }));
         }
       }
-    }, [groupedEvents]);
+    }, [groupedEvents, setExpandedSections]);
 
   return { expandedSections, setExpandedSections, toggleSection };
 };

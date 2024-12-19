@@ -5,6 +5,7 @@ import Loading from "../components/Loading";
 import { useContext, useMemo } from "react";
 import { EventContext } from "../store/Contexts";
 import { getEventNames } from "../utils/helpers";
+import EmptyEvents from "../components/EmptyEvents";
 
 const Events = () => {
   const { isLoading, events } = useContext(EventContext);
@@ -15,8 +16,10 @@ const Events = () => {
       <h2 className="page-heading">Events</h2>
       { isLoading ? 
         <Loading /> : 
-        <List 
-          items={eventNames}  
+        events.length < 1 ?
+        <EmptyEvents text="events" /> :
+        <List
+          items={eventNames}
           renderItem={(event) => (
             <div>
               <p className="text-lg font-semibold">{event.name}</p>

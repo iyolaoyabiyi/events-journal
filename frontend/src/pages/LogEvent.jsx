@@ -31,10 +31,12 @@ const LogEvent = () => {
         message = "New event added!";
         await addEvent(formData);
       }
-      // Navigate to homepage
-      navigate('/');
       showBanner({setMessage, message, setType, type, setIsVisible });
-      setUpdateStat(false);
+      // Navigate to homepage
+      navigate("/", { replace: true });
+      setTimeout(() => {
+        setUpdateStat(false);
+      }, 100);
     } catch (err) {
       const message = err.response.data.error.join(". ");
       const type = "error";

@@ -6,6 +6,7 @@ import EventCard from "../components/EventCard";
 import Loading from "../components/Loading";
 import { groupEvents, showBanner } from "../utils/helpers";
 import { useFormNavigation, useToggleSections, useEventOperations } from "../hooks/Hooks";
+import EmptyEvents from '../components/EmptyEvents';
 
 const Journal = () => {
   const { events, isLoading } = useContext(EventContext);
@@ -41,16 +42,15 @@ const Journal = () => {
     <section className="page bg-gray-50 p-6">
       <h2 className="page-heading text-3xl font-extrabold text-green-700 mb-4">Journal</h2>
       {isLoading ? (
-        <Loading />
-      ) : (
+        <Loading count={5} height={"50px"} />
+      ) : 
+      events.length < 1 ? <EmptyEvents text="events" /> : (
         <div className="space-y-6">
           {[...groupedEvents.entries()].map(([year, months]) => (
               <div key={year} className="border border-green-300 bg-white shadow-lg rounded-lg p-4">
-                <h3
-                  className="cursor-pointer font-bold text-xl text-green-800 flex items-center
+                <h3 className="cursor-pointer font-bold text-xl text-green-800 flex items-center
                   justify-between"
-                  onClick={() => toggleSection(year)}
-                >
+                  onClick={() => toggleSection(year)}>
                   {year}
                   <span className="ml-2 text-green-500">
                     {expandedSections[year] ? (
@@ -63,11 +63,9 @@ const Journal = () => {
                 {expandedSections[year] &&
                   [...months.entries()].map(([month, days]) => (
                     <div key={month} className="pl-4 mt-2">
-                      <h4
-                        className="cursor-pointer font-medium text-lg text-green-700 flex items-center 
+                      <h4 className="cursor-pointer font-medium text-lg text-green-700 flex items-center 
                         justify-between"
-                        onClick={() => toggleSection(`${year}-${month}`)}
-                      >
+                        onClick={() => toggleSection(`${year}-${month}`)}>
                         <span className="flex items-center">
                           <CalendarIcon className="w-5 h-5 mr-2 text-green-600" /> {month}
                         </span>
@@ -82,11 +80,9 @@ const Journal = () => {
                       {expandedSections[`${year}-${month}`] &&
                         [...days.entries()].map(([day, dayEvents]) => (
                           <div key={day} className="pl-8 mt-2">
-                            <h5
-                              className="cursor-pointer font-light text-md text-green-600 flex items-center
-                              justify-between"
-                              onClick={() => toggleSection(`${year}-${month}-${day}`)}
-                            >
+                            <h5 className="cursor-pointer font-light text-md text-green-600 flex 
+                              items-center justify-between"
+                              onClick={() => toggleSection(`${year}-${month}-${day}`)}>
                               <span className="flex items-center">
                                 <CalendarIcon className="w-4 h-4 mr-2 text-green-500" /> {day}
                               </span>
@@ -117,7 +113,6 @@ const Journal = () => {
         </div>
       )}
     </section>
-
   );
 }
 

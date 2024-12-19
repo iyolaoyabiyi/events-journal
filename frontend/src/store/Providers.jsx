@@ -21,9 +21,10 @@ export const BannerProvider = ({ children }) => {
 export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [expandedSections, setExpandedSections] = useState({});
 
   return (
-    <EventContext.Provider value={{events, setEvents, isLoading, setLoading}}>
+    <EventContext.Provider value={{events, setEvents, expandedSections, setExpandedSections, isLoading, setLoading}}>
       { children }
     </EventContext.Provider>
   )
