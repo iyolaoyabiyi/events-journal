@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { memo } from "react";
 
 function EventCard({ event, onEdit, onDelete }) {
   return (
@@ -43,4 +44,4 @@ EventCard.propTypes = {
   onDelete: PropTypes.func
 }
 
-export default EventCard;
+export default memo(EventCard);

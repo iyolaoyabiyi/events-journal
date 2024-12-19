@@ -12,7 +12,10 @@ const Layout = () => {
   useTitle();
   // Update events on mount
   useEffect(() => {
-    refreshEvents();
+    const cachedEvents = sessionStorage.getItem("events");
+    if (!cachedEvents) {
+      refreshEvents();
+    }
   }, [refreshEvents]);
 
   return (

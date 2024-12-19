@@ -9,14 +9,22 @@ import CONFIG from "../../CONFIG";
 
 const appName = CONFIG?.appName || "Events Journal";
 
+// Events management hook
 export const useEventOperations = () => {
   const { setEvents, setLoading } = useContext(EventContext);
 
   const refreshEvents = useCallback(async () => {
     setLoading(true);
     try {
+      const cachedEvents = sessionStorage.getItem("events");
+      if (cachedEvents) {
+        setEvents(JSON.parse(cachedEvents));
+        return setLoading(false);
+      }
       const res = await fetchEvents();
-      setEvents(res.data.events);
+      const events = res.data.events;
+      setEvents(events);
+      sessionStorage.setItem("events", JSON.stringify(events));
     } catch (err) {
       console.error('Error fetching events:', err);
       showBanner({ message: 'Failed to fetch events', type: 'error' });
@@ -25,19 +33,25 @@ export const useEventOperations = () => {
     }
   }, [setEvents, setLoading]);
 
+  // Update cache
+  const updateCache = () => {
+    sessionStorage.removeItem("events");
+    refreshEvents();
+  }
+
   const addEvent = async (eventData) => {
     await createEvent(eventData);
-    refreshEvents();
+    updateCache();
   };
 
   const editEvent = async (id, eventData) => {
     await updateEvent(id, eventData);
-    refreshEvents();
+    updateCache();
   };
 
   const removeEvent = async (id) => {
     await deleteEvent(id);
-    refreshEvents();
+    updateCache();
   };
 
   useEffect(() => {
@@ -47,6 +61,7 @@ export const useEventOperations = () => {
   return { addEvent, editEvent, removeEvent, refreshEvents };
 };
 
+// Prepopulate form data
 export const useFormNavigation = () => {
   const { setFormData, setUpdateStat } = useContext(FormContext);
   const navigate = useNavigate();
@@ -72,6 +87,7 @@ export const useTitle = () => {
   return null;
 }
 
+// Handles Journal section toggling
 export const useToggleSections = (groupedEvents) => {
   const [expandedSections, setExpandedSections] = useState({});
 

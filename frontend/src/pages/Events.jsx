@@ -2,13 +2,13 @@ import PropTypes from "prop-types";
 
 import List from "../components/List";
 import Loading from "../components/Loading";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { EventContext } from "../store/Contexts";
 import { getEventNames } from "../utils/helpers";
 
 const Events = () => {
   const { isLoading, events } = useContext(EventContext);
-  const eventNames = getEventNames(events);
+  const eventNames = useMemo(() => getEventNames(events), [events]);
   
   return (
     <section className="page">

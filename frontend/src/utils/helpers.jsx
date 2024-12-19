@@ -108,7 +108,7 @@ export const getMostRecentDate = (groupedEvents) => {
 
 // Get unique events
 export const getEventNames = events => {
-  const updatedEvents = events.filter((event, index, events) => index === events.findIndex(item => event.name === item.name) );
+  const updatedEvents = events.filter((event, index, events) => index === events.findIndex(item => event.name === item.name && event.category === item.category));
   return updatedEvents;
 }
 

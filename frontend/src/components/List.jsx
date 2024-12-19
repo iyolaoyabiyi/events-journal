@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { memo } from "react";
 
 const List = ({ items, renderItem }) => {
   return (
@@ -17,4 +18,4 @@ List.propTypes = {
   renderItem: PropTypes.func
 }
 
-export default List;
+export default memo(List);

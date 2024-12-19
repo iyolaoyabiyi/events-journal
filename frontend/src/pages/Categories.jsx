@@ -2,12 +2,13 @@ import PropTypes from "prop-types";
 
 import List from "../components/List";
 import Loading from "../components/Loading";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { EventContext } from "../store/Contexts";
 import { getCategories } from "../utils/helpers";
 
 const Categories = () => {
   const { events, isLoading } = useContext(EventContext);
+  const categories = useMemo(() => getCategories(events), [events])
   
   return (
     <section className="page">
@@ -16,7 +17,7 @@ const Categories = () => {
         { isLoading ? 
           <Loading /> :
           <List 
-            items={ getCategories(events) }
+            items={ categories }
             renderItem={ (category, index) => (
               <p key={ index } className="text-lg font-semibold">{ category }</p>
             )}
