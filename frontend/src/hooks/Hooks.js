@@ -68,8 +68,7 @@ export const useEventOperations = () => {
 
   useEffect(() => {
     refreshEvents();
-    updateCache();
-  }, [refreshEvents, updateCache]);
+  }, [refreshEvents]);
 
   return { addEvent, editEvent, removeEvent, refreshEvents };
 };

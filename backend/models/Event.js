@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/db.js";
 
-import events from "../data/mockData.json" assert { type: "json" }
+// import events from "../data/mockData.json" assert { type: "json" }
 
 const Event = sequelize.define("event", {
   id: {
@@ -48,9 +48,9 @@ const Event = sequelize.define("event", {
   },
 });
 
-export const seedData = async () => {
-  await Event.bulkCreate(events);
-  console.log("Seed events added");
-}
+// export const seedData = async () => {
+//   await Event.bulkCreate(events);
+//   console.log("Seed events added");
+// }
 
 export default Event;

@@ -5,7 +5,7 @@ import express from "express";
 import helmet from "helmet";
 
 import eventRouter from "./routes/eventRoutes.js";
-import { seedData } from "./models/Event.js";
+// import { seedData } from "./models/Event.js";
 import { sequelize } from "./config/db.js";
 
 dotenv.config();
@@ -21,7 +21,7 @@ try {
   await sequelize.sync();
   console.log("Database connected successfully.");
 
-  await seedData();
+  // await seedData();
   app.use("/api/events", eventRouter);
 
   app.listen(PORT, () => {

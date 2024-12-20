@@ -19,18 +19,21 @@ const initDb = () => {
         sequelize = new Sequelize({
           dialect: "sqlite",
           storage: dbStorage,
+          logging: false
         });
         break;   
       case "mysql":
         sequelize = new Sequelize(dbName, dbUser, dbPass, {
           host: dbHost,
           dialect: "mysql",
+          logging: false
         });
         break;    
       case "postgres":
         sequelize = new Sequelize(dbName, dbUser, dbPass, {
           host: dbHost,
           dialect: "postgres",
+          logging: false
         });
         break;    
       default:
