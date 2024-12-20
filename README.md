@@ -135,7 +135,7 @@ Example of a logged event:
   "startTime": "2024-12-10T06:00:00",
   "endTime": "2024-12-10T06:45:00"
 }
-
+```
 
 ### Development Tools and Dependencies
 
