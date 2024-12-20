@@ -12,6 +12,6 @@ export const deleteEvent = async (id) => {
   return api.delete(`/events/${id}`);
 };
 
-export const fetchEvents = async () => {
-  return api.get('/events');
+export const fetchEvents = async (page, limit) => {
+  return api.get(`/events?page=${page}&limit=${limit}`);
 };

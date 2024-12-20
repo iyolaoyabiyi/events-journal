@@ -1,9 +1,9 @@
 import { useCallback, useContext, useEffect } from "react";
 import { useNavigate,  useLocation } from "react-router-dom";
 
-import { EventContext, FormContext  } from "../store/Contexts";
+import { BannerContext, EventContext, FormContext  } from "../store/Contexts";
 
-import { createEvent, updateEvent, deleteEvent, fetchEvents } from '../../services/apiServices';
+import { createEvent, updateEvent, deleteEvent, fetchEvents } from '../services/apiServices';
 import { defaultFormData, getMostRecentDate, showBanner, titles  } from "../utils/helpers";
 import CONFIG from "../../CONFIG";
 
@@ -11,33 +11,45 @@ const appName = CONFIG?.appName || "Events Journal";
 
 // Events management hook
 export const useEventOperations = () => {
-  const { setEvents, setLoading } = useContext(EventContext);
+  const { setMessage, setType, setIsVisible } = useContext(BannerContext)
+  const { setEvents, setLoading, setTotalJournalPages } = useContext(EventContext);
 
-  const refreshEvents = useCallback(async () => {
+  const refreshEvents = useCallback(async (filters = {}) => {
+    let { page = 1, limit = 100, isForced = false } = filters;
+
     setLoading(true);
     try {
       const cachedEvents = sessionStorage.getItem("events");
-      if (cachedEvents) {
+      if (cachedEvents && !isForced) {
         setEvents(JSON.parse(cachedEvents));
-        return setLoading(false);
+        setLoading(false)
+        return cachedEvents;
       }
-      const res = await fetchEvents();
+      
+      const res = await fetchEvents(page, limit);
       const events = res.data.events;
       setEvents(events);
+      setTotalJournalPages(res.data.totalPages);
       sessionStorage.setItem("events", JSON.stringify(events));
+      
+      return events;
     } catch (err) {
       console.error('Error fetching events:', err);
-      showBanner({ message: 'Failed to fetch events', type: 'error' });
+      showBanner({ 
+        message: 'Failed to fetch events', 
+        type: 'error', 
+        setMessage, setType, setIsVisible 
+      });
     } finally {
       setLoading(false);
     }
-  }, [setEvents, setLoading]);
+  }, [setLoading, setEvents, setTotalJournalPages, setMessage, setType, setIsVisible]);
 
   // Update cache
-  const updateCache = () => {
+  const updateCache = useCallback(() => {
     sessionStorage.removeItem("events");
     refreshEvents();
-  }
+  }, [refreshEvents]);
 
   const addEvent = async (eventData) => {
     await createEvent(eventData);
@@ -56,7 +68,8 @@ export const useEventOperations = () => {
 
   useEffect(() => {
     refreshEvents();
-  }, [refreshEvents]);
+    updateCache();
+  }, [refreshEvents, updateCache]);
 
   return { addEvent, editEvent, removeEvent, refreshEvents };
 };

@@ -1,5 +1,5 @@
 import { ChevronDownIcon, ChevronRightIcon, CalendarIcon } from '@heroicons/react/24/solid';
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { BannerContext, EventContext } from "../store/Contexts";
 import EventCard from "../components/EventCard";
@@ -7,12 +7,14 @@ import Loading from "../components/Loading";
 import { groupEvents, showBanner } from "../utils/helpers";
 import { useFormNavigation, useToggleSections, useEventOperations } from "../hooks/Hooks";
 import EmptyEvents from '../components/EmptyEvents';
+import Button from '../components/Button';
 
 const Journal = () => {
-  const { events, isLoading } = useContext(EventContext);
+  const { events, isLoading, totalJournalPages } = useContext(EventContext);
   const { setIsVisible, setMessage, setType} = useContext(BannerContext);
+  const [currentPage, setCurrentPage] = useState(1);
   const setFormAndNavigate = useFormNavigation();
-  const { removeEvent } = useEventOperations();
+  const { refreshEvents, removeEvent } = useEventOperations();
   
   // Group events when the events changes
   const groupedEvents = useMemo(() => {
@@ -38,11 +40,18 @@ const Journal = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await refreshEvents({page: currentPage, limit: 100, isForced: true});
+    };
+    fetchData();
+  }, [currentPage, refreshEvents]);
+
   return (
     <section className="page bg-gray-50 p-6">
       <h2 className="page-heading text-3xl font-extrabold text-green-700 mb-4">Journal</h2>
       {isLoading ? (
-        <Loading count={5} height={"50px"} />
+        <Loading count={5} height="50px" />
       ) : 
       events.length < 1 ? <EmptyEvents text="events" /> : (
         <div className="space-y-6">
@@ -110,6 +119,21 @@ const Journal = () => {
                   ))}
               </div>
             ))}
+            <div className="flex justify-center items-center space-x-4 mt-6">
+              <Button 
+                type="button" 
+                classType={currentPage === 1 ? "default" : "primary"}
+                clickFunc={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                btnText="Previous" disabled={currentPage === 1}
+              />
+              <span>Page {currentPage} of {totalJournalPages}</span>
+              <Button 
+                type="button" 
+                classType={currentPage === totalJournalPages ? "default" : "primary"}
+                clickFunc={() => setCurrentPage((prev) => Math.min(prev + 1, totalJournalPages))}
+                btnText="Next" disabled={currentPage === totalJournalPages}
+              />
+            </div>
         </div>
       )}
     </section>

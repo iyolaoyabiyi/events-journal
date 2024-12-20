@@ -27,7 +27,7 @@ export const createEvent = async (req, res) => {
 export const readEvents = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const { page = 1, limit = 100, category, startTime } = req.query;
+    const { page = 1, limit, category, startTime } = req.query;
     if (eventId) {
       // Fetch a single event by ID
       const event = await Event.findByPk(eventId);
@@ -36,10 +36,6 @@ export const readEvents = async (req, res) => {
       }
       return res.status(200).json({ events: event, status: "read" });
     }
-
-    // Pagination calculation
-    const offset = (page - 1) * limit;
-
     // Filtering conditions
     const where = {};
     if (category) {
@@ -48,27 +44,30 @@ export const readEvents = async (req, res) => {
     if (startTime) {
       where.startTime = { [Op.gte]: new Date(startTime) }; // Using Sequelize Op for comparison
     }
+    // Get the total number of events matching the filters
+    const total = await Event.count({ where });
 
-    // Fetch filtered and paginated events
+    // Default limit to total events if not provided
+    const parsedLimit = limit <= 0 ? total : limit;
+    const parsedPage = parseInt(page);
+    const offset = (parsedPage - 1) * parsedLimit;
+    // Fetch events with pagination
     const events = await Event.findAll({
       where,
-      limit: parseInt(limit),
-      offset: parseInt(offset),
+      limit: parsedLimit,
+      offset,
       order: [["startTime", "DESC"]],
     });
 
-    const total = await Event.count({ where }); // Total events matching filters
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.ceil(total / parsedLimit);
 
     res.status(200).json({
       events,
       status: events.length ? "read" : "empty",
-      pagination: {
-        total,
-        totalPages,
-        currentPage: parseInt(page),
-        limit: parseInt(limit),
-      },
+      total,
+      totalPages,
+      currentPage: parsedPage,
+      limit: parsedLimit
     });
   } catch (err) {
     const errors = getErrors(err);

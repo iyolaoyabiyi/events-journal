@@ -22,9 +22,12 @@ export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState({});
+  const [totalJournalPages, setTotalJournalPages] = useState(1);
 
   return (
-    <EventContext.Provider value={{events, setEvents, expandedSections, setExpandedSections, isLoading, setLoading}}>
+    <EventContext.Provider 
+      value={{events, setEvents, expandedSections, setExpandedSections, totalJournalPages, 
+      setTotalJournalPages, isLoading, setLoading}}>
       { children }
     </EventContext.Provider>
   )
