@@ -15,11 +15,13 @@ const Journal = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const setFormAndNavigate = useFormNavigation();
   const { refreshEvents, removeEvent } = useEventOperations();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredEvents, setFilteredEvents] = useState([]);
   
   // Group events when the events changes
   const groupedEvents = useMemo(() => {
-    return events ? groupEvents(events) : {};
-  }, [events]);
+      return filteredEvents.length ? groupEvents(filteredEvents) : groupEvents(events);
+  }, [events, filteredEvents]);
   const { expandedSections, toggleSection } = useToggleSections(groupedEvents);
 
   // Handle edit button
@@ -47,9 +49,34 @@ const Journal = () => {
     fetchData();
   }, [currentPage, refreshEvents]);
 
+  useEffect(() => {
+    if (searchTerm) {
+      setFilteredEvents(
+        events.filter(
+          (event) =>
+            event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            event.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            event.description.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredEvents([]);
+    }
+  }, [searchTerm, events]);  
+
   return (
     <section className="page bg-gray-50 p-6">
       <h2 className="page-heading text-3xl font-extrabold text-green-700 mb-4">Journal</h2>
+      <div className="mb-4 flex justify-between items-center">
+        <input
+          type="text"
+          placeholder="Search events by name or category"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm 
+          focus:outline-none focus:ring-green-500 focus:border-green-500"
+        />
+      </div>
       {isLoading ? (
         <Loading count={5} height="50px" />
       ) : 
